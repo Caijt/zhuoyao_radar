@@ -21,6 +21,12 @@
                 <el-button size="mini" @click="clearAllMarkers();yaolingCoordList=[]">清空妖灵</el-button>
                 <el-button
                     size="mini"
+                    @click="stopSearch"
+                    type="danger"
+                    v-show="searching"
+                >停止搜索</el-button>
+                <el-button
+                    size="mini"
                     :type="this.mode=='wide'?'success':'danger'"
                     @click="openWideDialog"
                 >大范围：{{this.mode=="wide"?(Math.pow(max_range,2)+"格"):"关闭"}}</el-button>
@@ -140,12 +146,12 @@
                 <el-button type="primary" size="mini" @click="saveWideSettings">确定</el-button>
             </div>
         </el-dialog>
-        <el-dialog title="妖灵详情" top="0" :visible.sync="infoDialogVisible" size="mini">
+        <el-dialog title="妖灵详情" top="0" :visible.sync="infoDialogVisible" size="mini" class="test">
             <el-row :gutter="20">
-                <el-col :span="8">
+                <el-col :span="8" :xs="{span:24}">
                     <img :src="yaolingInfo.headimg" style="display:block;margin:0 auto" />
                 </el-col>
-                <el-col :span="16">
+                <el-col :span="16" :xs="{span:24}">
                     <el-form label-width="80px" size="mini">
                         <el-form-item label="名称">{{yaolingInfo.name}}</el-form-item>
                         <el-form-item label="腾讯坐标">
@@ -330,7 +336,8 @@ export default {
             },
             infoDialogVisible: false,
             geocoder: null,
-            address: ""
+            address: "",
+            canceling: false
         };
     },
     mounted() {
@@ -345,21 +352,12 @@ export default {
                 position: "bottom-left"
             });
             _this.clickMap({ latLng: result.detail.location });
-            // var marker = new qq.maps.Marker({
-            //     map: _this.map,
-            //     position: result.detail.location
-            // });
-            // //点击Marker会弹出反查结果
-            // qq.maps.event.addListener(marker, "click", function() {
-            //     alert("坐标地址为： " + result.detail.location);
-            // });
         });
         this.geocoder.setError(function() {
             _this.$notify.error("无法定位输入的地址！");
         });
         // 初始化websocket
         this.initSockets();
-
         // 获取用户位置
         if (!this.settings.position_sync) {
             this.getLocation()
@@ -477,6 +475,7 @@ export default {
                         this.startTaskWithSocket(socket);
                     }
                 }
+                console.log(this.sockets);
             }
         },
         /**
@@ -527,13 +526,28 @@ export default {
             }
             this.max_range = this.range * 2 + 1;
             this.wideDialogVisible = false;
-            // this.sockets = new Array(this.thread);
         },
         formatTooltip(val) {
             return Math.pow(val * 2 + 1, 2) + "格";
         },
         goMap() {
             this.geocoder.getLocation(this.address);
+        },
+        stopSearch() {
+            if (this.radarTask) {
+                this.radarTask.closeTasks();
+            }
+            for (let s of this.sockets) {
+                if (s && s.socket) {
+                    if (s.timeout) {
+                        clearTimeout(s.timeout);
+                    }
+                    delete s.task;
+                    s.socket.close();
+                }
+            }
+            this.searching = false;
+            this.progressShow = false;
         }
     },
     computed: {
@@ -622,10 +636,17 @@ export default {
     text-decoration: underline;
     color: #409eff;
 }
-.search-input{
-    width:150px !important;
-    .el-input-group__append{
-        padding:0 10px
+.search-input {
+    width: 150px !important;
+    .el-input-group__append {
+        padding: 0 10px;
+    }
+}
+@media (max-width: 768px) {
+    .test {
+        .el-dialog {
+            width: 80%;
+        }
     }
 }
 </style>

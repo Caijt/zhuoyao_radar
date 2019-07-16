@@ -88,12 +88,20 @@ class RadarTasks {
       console.log(`task.${index} 已完成`);
     }
   }
+
+  closeTasks(){
+    for(let t of  this.tasks){
+      if(t.status!="close"){
+        t.status="cancel";
+      }
+    }
+  }
   /**
    * 是否全部完成
    */
   isComplete() {
     let _task = this.tasks.find(t => {
-      return t.status !== 'close';
+      return t.status !== 'close'&&t.status!=="cancel";
     });
     console.log('isComplete', _task);
 

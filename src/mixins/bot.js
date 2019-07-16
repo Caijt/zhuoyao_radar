@@ -81,7 +81,7 @@ module.exports = {
     botGetYaoling: function() {
       // const convertLocation = n => parseInt(1e6 * n.toFixed(6));
       this.botTime++;
-
+      console.log("Aaaaaaaaaaaaaaaaaaaaaaaaddddddddddddd")
       this.sendMessage(
         this.initSocketMessage('1001', {
           longitude: this.botLocation.longitude,

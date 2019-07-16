@@ -1,6 +1,6 @@
 # 捉妖雷达 web坐标版
 
-这是在https://github.com/liuzirui1122/zhuoyao_radar 的基础上增加了坐标显示功能及大范围功能的界面配置。就是不知坐标准不准，我也没玩这个游戏。
+这是在https://github.com/liuzirui1122/zhuoyao_radar 的基础上增加了坐标显示功能、地址定位功能、停止搜索功能、大范围功能的界面配置。就是不知坐标准不准，我也没玩这个游戏。
 
 ![演示图](./demo.gif)
 

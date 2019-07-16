@@ -84,7 +84,7 @@ module.exports = {
      * 处理消息
      */
     handleMessage(data, socket) {
-      
+
       var msgType = this.messageMap.get(`msg_${data.requestid}`);
       if (msgType) {
         this.messageMap.delete(`msg_${data.requestid}`);
@@ -107,7 +107,7 @@ module.exports = {
             // 机器人模式
             this.botAnalyze(data.sprite_list);
             return;
-          } 
+          }
 
           if (this.mode === 'wide' || this.mode === 'temp') {
             this.buildMarkersByData(data.sprite_list);
@@ -118,7 +118,8 @@ module.exports = {
             let _task = this.radarTask.getNextTask(); // 开始下一个任务
             if (_task) {
               socket.task = _task;
-              setTimeout(() => {
+              
+              socket.timeout = setTimeout(() => {
                 this.sendMessage(
                   this.initSocketMessage('1001', {
                     longitude: _task.longitude,
@@ -191,7 +192,7 @@ module.exports = {
      * 接收到妖灵信息后，重置消息列表
      */
     broadcastGroupMessage(groupId) {
-      this.messageMap.forEach((v,i,a) => {
+      this.messageMap.forEach((v, i, a) => {
         if (v.opts.groupId == groupId) {
           v.discard();
         }
@@ -201,7 +202,7 @@ module.exports = {
      * 刷新消息列表
      */
     refreshGroupMessage() {
-      this.messageMap.forEach((v,i,a) => {
+      this.messageMap.forEach((v, i, a) => {
         if (v.status == "finish" || v.status == "discarded") {
           v.delete();
         }

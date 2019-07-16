@@ -12,8 +12,7 @@ module.exports = {
      * 初始化socket
      */
     initSockets() {
-      // MAX_SOCKETS: this.$parent.mode === 'normal' ? 1 : WIDE_SEARCH.MAX_SOCKETS,
-
+      // MAX_SOCKETS: this.$parent.mode === 'normal' ? 1 : WIDE_SEARCH.MAX_SOCKETS,     
       //let max = this.mode === 'normal' ? 1 : this.thread;
       let max = this.thread;
       let maxTimeout = this.mode === 'temp' ? 1000 : 3000;
@@ -78,6 +77,7 @@ module.exports = {
       }
       let _task = this.radarTask.getNextTask(); // 获取队列中第一个任务
       if (_task) {
+        console.log("123123123213213123");
         socket.task = _task;
         this.sendMessage(
           this.initSocketMessage('1001', {

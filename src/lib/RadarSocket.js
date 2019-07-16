@@ -13,9 +13,9 @@ class RadarWebSocket {
       reconnectTimeout: 1000, // 断线重连时间
       maxTimeout: 3000, //超时未回复重连时间
       index: 0, // socket标识
-      onopen: () => {},
-      onclose: () => {},
-      onmessage: () => {}
+      onopen: () => { },
+      onclose: () => { },
+      onmessage: () => { }
     };
 
     this.opts = Object.assign({}, defaults, opts);

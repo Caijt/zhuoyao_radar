@@ -46,7 +46,7 @@ export default {
   position: absolute;
   width: 300px;
   left: 50%;
-  top: 10px;
+  bottom: 10px;
   transform: translate(-50%, 0);
   text-align: center;
   font-size: 14px;

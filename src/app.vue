@@ -17,8 +17,8 @@
                     :loading="searching"
                 >查找妖灵</el-button>
                 <el-button size="mini" @click="filterDialogVisible = true">自定义筛选</el-button>
-                <el-button size="mini" @click="coordDialogVisible = true">妖灵坐标</el-button>
-                <el-button size="mini" @click="clearAllMarkers();yaolingCoordList=[]">清空妖灵</el-button>
+                <el-button size="mini" @click="coordDialogVisible = true">妖灵列表 [{{yaolingCoordList.length}}]</el-button>
+                <el-button size="mini" @click="clearAllYaoling">清空妖灵</el-button>
                 <el-button
                     size="mini"
                     @click="stopSearch"
@@ -436,7 +436,7 @@ export default {
                 return;
             }
             // 先清除标记
-            this.clearAllMarkers();
+            this.clearAllYaoling();
             if (this.mode === "normal") {
                 alert("123");
                 if (this.searchOutboxMarker != null)
@@ -548,6 +548,10 @@ export default {
             }
             this.searching = false;
             this.progressShow = false;
+        },
+        clearAllYaoling(){
+            this.clearAllMarkers();
+            this.yaolingCoordList=[];
         }
     },
     computed: {

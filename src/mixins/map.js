@@ -45,10 +45,10 @@ module.exports = {
      */
     clickMap(e) {
       if ((this.mode === 'wide' || this.mode === 'temp') && this.searching) {
-        this.$notify({message:'搜索中'}) 
+        this.$notify({ message: '搜索中' })
         return false;
       }
-      this.$notify({message:'位置已重置'}) 
+      this.$notify({ message: '位置已重置' })
       this.location.longitude = e.latLng.lng;
       this.location.latitude = e.latLng.lat;
       var icon = new qq.maps.MarkerImage(
@@ -81,8 +81,12 @@ module.exports = {
     addMarkers(yl) {
       // alert("addMarkers")
       var key = window.md5(yl.gentime.toString() + yl.latitude.toString() + yl.longtitude.toString());
-
-      if (this.markers.has(key)) return; //重复妖灵不添加
+      console.log(key)
+      if (this.markers.has(key)) {
+        return;
+      } else {
+        // this.markers[key] = "";
+      } //重复妖灵不添加
 
       let headImage = this.getHeadImagePath(yl);
       let yaolingInfo = this.getYaolingById(yl.sprite_id);
@@ -147,7 +151,7 @@ module.exports = {
         markeropts.labelMarker = labelMarker;
       }
 
-      this.markers[key] = new RadarMapMarker(markeropts);
+      this.markers.set(key,new RadarMapMarker(markeropts));
     },
     buildSearchboxMarker(lat, lng, showOuter) {
       if (!this.settings.show_box) return;
@@ -193,8 +197,8 @@ module.exports = {
      * 清除标记
      */
     clearAllMarkers() {
-      for (var key in this.markers) {
-        this.markers[key].clear();
+      for (var key of this.markers) {
+        key[1].clear();
       }
       this.markers.clear();
     },

@@ -52,7 +52,7 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, '../dist'),
-    publicPath: process.env.NODE_ENV === 'development' ? '/' : '/dist/',
+    publicPath: process.env.NODE_ENV === 'development' ? '/' : '',
     filename: '[name].js',
     chunkFilename: '[name].js'
   },
@@ -88,7 +88,7 @@ module.exports = {
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
         exclude: /node_modules/,
-        include: resolve('src'),
+        // include: resolve('src'),
         loaders: [
           {
             loader: 'url-loader',
@@ -112,7 +112,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       env: process.env.NODE_ENV,
       filename:
-        process.env.NODE_ENV === 'development' ? 'index.html' : '../index.html',
+        process.env.NODE_ENV === 'development' ? 'index.html' : 'index.html',
       template: './src/index.html'
     })
   )

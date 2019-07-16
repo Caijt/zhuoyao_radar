@@ -1,7 +1,9 @@
+const path = require('path');
 let webpack = require('webpack');
 let merge = require('webpack-merge');
 let baseWebpackConfig = require('./webpack.base.conf');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 let UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const os = require('os');
 
@@ -34,7 +36,14 @@ const prodConfig = merge(baseWebpackConfig, {
 
     new MiniCssExtractPlugin({
       filename: `[name].[contenthash:8].css`
-    })
+    }),
+    new CopyWebpackPlugin([
+      {
+        from: path.resolve(__dirname, '../static'),
+        to: "static",
+        ignore: ['.*']
+      }
+    ])
   ]
 });
 

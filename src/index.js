@@ -16,7 +16,7 @@ import {
   Icon,
   Switch,
   Notification,
-  MessageBox,
+  // MessageBox,
   Dialog,
   Row,
   Col,
@@ -24,7 +24,13 @@ import {
   Input,
   Collapse,
   Checkbox,
-  CollapseItem
+  CollapseItem,
+  Table,
+  TableColumn,
+  Message,
+  Slider,
+  Form,
+  FormItem
 } from 'element-ui';
 import './index.less';
 import 'element-ui/lib/theme-chalk/button.css';
@@ -41,8 +47,12 @@ import 'element-ui/lib/theme-chalk/row.css';
 import 'element-ui/lib/theme-chalk/col.css';
 import 'element-ui/lib/theme-chalk/checkbox.css';
 
+import VueClipboard from "vue-clipboard2";
+Vue.use(VueClipboard);
+
 Vue.prototype.$ELEMENT = { size: 'medium' };
 Vue.prototype.$notify = Notification;
+Vue.prototype.$message = Message;
 
 Vue.use(Button);
 Vue.use(Switch);
@@ -55,6 +65,11 @@ Vue.use(Dialog);
 Vue.use(Row);
 Vue.use(Col);
 Vue.use(Checkbox);
+Vue.use(Table);
+Vue.use(TableColumn);
+Vue.use(Slider);
+Vue.use(Form);
+Vue.use(FormItem);
 
 let getParameter = (name, loca = window.location.href) => {
   const regexS = `[\\?&]${name}=([^&#]*)`;
@@ -73,7 +88,7 @@ let thread = getParameter('thread');
 let mode = "temp";
 if (location.href.indexOf('wide') > -1) {
   mode = "wide";
-} 
+}
 
 let vueapp = new Vue({
   el: '#root',

@@ -1,4 +1,14 @@
-# 捉妖雷达 web版
+# 捉妖雷达 web坐标版
+
+这是在https://github.com/liuzirui1122/zhuoyao_radar 的基础上增加了坐标显示功能及大范围功能的界面配置。就是不知坐标准不准，我也没玩这个游戏。
+
+![演示图](./demo.gif)
+
+我把项目的发布改成全打包在dist目录了，build后，直接复制dist目录里面的全部文件到任何子目录都可以运行。
+
+------
+
+感谢原作者的源代码！以下是原作者的README
 
 [![GPL Licence](https://badges.frapsoft.com/os/gpl/gpl.svg?v=103)](https://opensource.org/licenses/GPL-3.0/)  [![Gitter](https://badges.gitter.im/zhuoyao_radar/community.svg)](https://gitter.im/zhuoyao_radar/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
@@ -10,7 +20,7 @@
 ### 为什么要做web版
 
 因为实在忍受不了小程序雷达的不稳定，socket动不动502错误还没法重连，所以改写了一个web版。    
-目前前端还在开发当中。可能随时会被封，感谢@ZachXia提供的思路。   
+目前前端还在开发当中。可能随时会被封，感谢@ZachXia提供的思路。
 
 
 ### 更新日志
@@ -22,7 +32,7 @@
 紧急修复一些问题    
 去除版本请求，优化连接、重连    
 现在妖灵剩余时间会自动变化     
- 
+
 #### v1.5.1&2   
 加入金角和星宿妖灵7个，捉妖记血妖，coco檐上喵  
 

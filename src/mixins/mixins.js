@@ -63,7 +63,7 @@ module.exports = {
       if (a) {
         return `https://hy.gwgo.qq.com/sync/pet/small/${a.ImgName}.png`;
       } else {
-        return 'src/assets/images/default-head.png';
+        return './static/default-head.png';
       }
     },
     /**

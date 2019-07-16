@@ -30,7 +30,7 @@ module.exports = {
         mapTypeControl: false,
         scrollwheel: true,
         draggable: true,
-        zoom: this.location.zoom ? this.location.zoom : 16, 
+        zoom: this.location.zoom ? this.location.zoom : 16,
       });
 
       qq.maps.event.addListener(this.map, 'click', this.clickMap);
@@ -45,13 +45,14 @@ module.exports = {
      */
     clickMap(e) {
       if ((this.mode === 'wide' || this.mode === 'temp') && this.searching) {
+        this.$notify({message:'搜索中'}) 
         return false;
       }
-      if (!this.settings.auto_search) this.notify('位置已重置,请重新筛选');
+      this.$notify({message:'位置已重置'}) 
       this.location.longitude = e.latLng.lng;
       this.location.latitude = e.latLng.lat;
       var icon = new qq.maps.MarkerImage(
-        'src/assets/images/notify-arrow.png',
+        './static/notify-arrow.png',
         null,
         null,
         null,
@@ -70,6 +71,7 @@ module.exports = {
       }
 
       if (this.settings.auto_search) {
+        this.yaolingCoordList = [];
         this.getYaolingInfo();
       }
     },
@@ -77,13 +79,13 @@ module.exports = {
      * 根据妖灵信息在地图上打个标记
      */
     addMarkers(yl) {
-
-      var key = window.md5(yl.gentime.toString()+yl.latitude.toString()+yl.longtitude.toString());
+      // alert("addMarkers")
+      var key = window.md5(yl.gentime.toString() + yl.latitude.toString() + yl.longtitude.toString());
 
       if (this.markers.has(key)) return; //重复妖灵不添加
 
       let headImage = this.getHeadImagePath(yl);
-
+      let yaolingInfo = this.getYaolingById(yl.sprite_id);
       var time = new Date((yl.gentime + yl.lifetime) * 1000) - new Date();
       var second = time / 1000;
       var minute = Math.floor(second / 60);
@@ -100,21 +102,34 @@ module.exports = {
         new qq.maps.Size(40, 40)
       );
       let position = new qq.maps.LatLng(yl.latitude / 1e6, yl.longtitude / 1e6);
+      let a = (yl.longtitude - 4380) / 1e6;
+      let b = (yl.latitude + 2720) / 1e6;
+      let yaoling = {
+        name: yaolingInfo.Name,
+        headimg: headImage,
+        qqcoord: position.lat + "," + position.lng,
+        applecoord: a + "," + b,
+        ancoord: b + "," + a
+      };
+      this.yaolingCoordList.push(yaoling);
       let marker = new qq.maps.Marker({
         position: position,
         map: this.map,
-        zIndex:20000,
-        clickable:false,
+        zIndex: 20000,
+        // clickable: false
       });
-
+      let _this = this;
       marker.setIcon(icon);
-      
+      qq.maps.event.addListener(marker, 'click', function () {
+        _this.yaolingInfo = yaoling;
+        _this.infoDialogVisible = true;
+      });
       let markeropts = {
-        marker:marker,
-        laberMarker:null,
-        time:new Date((yl.gentime + yl.lifetime) * 1000),
+        marker: marker,
+        laberMarker: null,
+        time: new Date((yl.gentime + yl.lifetime) * 1000),
       };
-      
+
 
       // 展示倒计时
       if (this.settings.show_time) {
@@ -127,52 +142,51 @@ module.exports = {
             border: 'none',
             backgroundColor: 'rgba(255,255,255,.7)'
           },
-          zIndex:22000,
+          zIndex: 22000,
         });
         markeropts.labelMarker = labelMarker;
       }
 
       this.markers[key] = new RadarMapMarker(markeropts);
     },
-    buildSearchboxMarker(lat,lng,showOuter) {
+    buildSearchboxMarker(lat, lng, showOuter) {
       if (!this.settings.show_box) return;
-      
       if (showOuter) {
         let outerPath = [
-          new qq.maps.LatLng(lat-WIDE_SEARCH.LAT_RANGE,lng-WIDE_SEARCH.LNG_RANGE),
-          new qq.maps.LatLng(lat-WIDE_SEARCH.LAT_RANGE,lng+WIDE_SEARCH.LNG_RANGE),
-          new qq.maps.LatLng(lat+WIDE_SEARCH.LAT_RANGE,lng+WIDE_SEARCH.LNG_RANGE),
-          new qq.maps.LatLng(lat+WIDE_SEARCH.LAT_RANGE,lng-WIDE_SEARCH.LNG_RANGE),
+          new qq.maps.LatLng(lat - WIDE_SEARCH.LAT_RANGE, lng - WIDE_SEARCH.LNG_RANGE),
+          new qq.maps.LatLng(lat - WIDE_SEARCH.LAT_RANGE, lng + WIDE_SEARCH.LNG_RANGE),
+          new qq.maps.LatLng(lat + WIDE_SEARCH.LAT_RANGE, lng + WIDE_SEARCH.LNG_RANGE),
+          new qq.maps.LatLng(lat + WIDE_SEARCH.LAT_RANGE, lng - WIDE_SEARCH.LNG_RANGE),
         ];
         this.searchOutboxMarker = new qq.maps.Polygon({
-          map:this.map,
-          path:outerPath,
-          clickable:false,
-          strokeColor:MAP_PARAMS.OUTBOX_STROKE,
-          strokeWeight:MAP_PARAMS.OUTBOX_WIDTH,
-          fillColor:MAP_PARAMS.OUTBOX_FILL,
-          zIndex:7000,
+          map: this.map,
+          path: outerPath,
+          clickable: false,
+          strokeColor: MAP_PARAMS.OUTBOX_STROKE,
+          strokeWeight: MAP_PARAMS.OUTBOX_WIDTH,
+          fillColor: MAP_PARAMS.OUTBOX_FILL,
+          zIndex: 7000,
         });
       } else {
-        let key = lat.toString()+lng.toString();
+        let key = lat.toString() + lng.toString();
         if (this.searchBoxWideSet.has(key)) return;
         this.searchBoxWideSet.add(key);
       }
 
       let path = [
-        new qq.maps.LatLng(lat-WIDE_SEARCH.LAT_RANGE/2,lng-WIDE_SEARCH.LNG_RANGE/2),
-        new qq.maps.LatLng(lat-WIDE_SEARCH.LAT_RANGE/2,lng+WIDE_SEARCH.LNG_RANGE/2),
-        new qq.maps.LatLng(lat+WIDE_SEARCH.LAT_RANGE/2,lng+WIDE_SEARCH.LNG_RANGE/2),
-        new qq.maps.LatLng(lat+WIDE_SEARCH.LAT_RANGE/2,lng-WIDE_SEARCH.LNG_RANGE/2),
+        new qq.maps.LatLng(lat - WIDE_SEARCH.LAT_RANGE / 2, lng - WIDE_SEARCH.LNG_RANGE / 2),
+        new qq.maps.LatLng(lat - WIDE_SEARCH.LAT_RANGE / 2, lng + WIDE_SEARCH.LNG_RANGE / 2),
+        new qq.maps.LatLng(lat + WIDE_SEARCH.LAT_RANGE / 2, lng + WIDE_SEARCH.LNG_RANGE / 2),
+        new qq.maps.LatLng(lat + WIDE_SEARCH.LAT_RANGE / 2, lng - WIDE_SEARCH.LNG_RANGE / 2),
       ];
       this.searchBoxMarker.push(new qq.maps.Polygon({
-        map:this.map,
-        path:path,
-        clickable:false,
-        strokeColor:MAP_PARAMS.BOX_STROKE,
-        strokeWeight:MAP_PARAMS.BOX_WIDTH,
-        fillColor:MAP_PARAMS.BOX_FILL,
-        zIndex:6000,
+        map: this.map,
+        path: path,
+        clickable: false,
+        strokeColor: MAP_PARAMS.BOX_STROKE,
+        strokeWeight: MAP_PARAMS.BOX_WIDTH,
+        fillColor: MAP_PARAMS.BOX_FILL,
+        zIndex: 6000,
       }));
     },
     /**
@@ -200,8 +214,8 @@ module.exports = {
     boxError() {
       if (this.searchBoxMarker.length == 1) {
         this.searchBoxMarker[0].setOptions({
-          fillColor:MAP_PARAMS.ERROR_FILL,
-          strokeColor:MAP_PARAMS.ERROR_STROKE,
+          fillColor: MAP_PARAMS.ERROR_FILL,
+          strokeColor: MAP_PARAMS.ERROR_STROKE,
         });
       }
     },

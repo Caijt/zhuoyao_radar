@@ -22,10 +22,9 @@
           <p>{{ version }}</p>
           <p><a href="http://note.youdao.com/noteshare?id=cf93745c828b381275f53e5a730eaf96" target="_blank">捉妖雷达开发贡献指引</a></p>
           <br>
-          <p>虚拟定位全家暴毙</p>
           <br/>
           <iframe
-            src="https://ghbtns.com/github-btn.html?user=liuzirui1122&repo=zhuoyao_radar&type=star&count=true&size=large"
+            src="https://ghbtns.com/github-btn.html?user=caijt&repo=zhuoyao_radar&type=star&count=true&size=large"
             frameborder="0"
             scrolling="0"
             width="160px"
